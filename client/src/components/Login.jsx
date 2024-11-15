@@ -14,7 +14,7 @@ function Login() {
       }, { withCredentials: true });
       alert(response.data.message);
     } catch (error) {
-      alert(error.response.data.error);
+      alert(error.response?.data?.error || 'An error occurred');
     }
   };
 

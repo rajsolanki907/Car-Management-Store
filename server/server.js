@@ -34,6 +34,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
+app.use(cors({
+  origin: 'http://localhost:5173', // Replace with your frontend URL
+  credentials: true
+}));
+
 // Express Session Configuration
 app.use(session({
   secret: process.env.SESSION_SECRET,
