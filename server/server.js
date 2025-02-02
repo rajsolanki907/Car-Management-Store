@@ -9,23 +9,30 @@ const fs = require('fs');
 const path = require('path');
 const session = require('express-session');
 const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
 
 dotenv.config();
 
 const User = require('./models/user');
 const Car = require('./models/car');
 
+// Import routes
+const userRoutes = require('./routes/users');
+const carRoutes = require('./routes/cars');
+const statsRoutes = require('./routes/stats');
+
 const app = express();
 const port = process.env.PORT || 3000;
+const mongoUri = process.env.MONGODB_URI;
 
-// Ensure the uploads directory exists
+// Create uploads directory if it doesn't exist
 const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir);
+if (!fs.existsSync(uploadsDir)){
+    fs.mkdirSync(uploadsDir);
 }
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(mongoUri)
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.error(err));
 
@@ -33,11 +40,13 @@ mongoose.connect(process.env.MONGODB_URI)
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-
 app.use(cors({
-  origin: 'http://localhost:5173/', 
+  origin: 'http://localhost:5173', // Your React app URL
   credentials: true
 }));
+
+// Add this middleware after cors and before routes
+app.use(cookieParser());
 
 // Express Session Configuration
 app.use(session({
@@ -166,6 +175,31 @@ app.delete('/cars/:id', isLoggedIn, async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// Routes
+app.use('/users', userRoutes);
+app.use('/cars', carRoutes);
+app.use('/stats', statsRoutes);
+
+// Serve uploaded files
+app.use('/uploads', express.static('uploads'));
+
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error('Error:', err);
+    
+    if (err instanceof multer.MulterError) {
+        return res.status(400).json({
+            error: 'File upload error',
+            details: err.message
+        });
+    }
+    
+    res.status(500).json({
+        error: 'Internal server error',
+        details: err.message
+    });
 });
 
 app.listen(port, () => {
