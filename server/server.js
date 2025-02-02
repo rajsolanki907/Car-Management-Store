@@ -32,10 +32,10 @@ mongoose.connect(process.env.MONGODB_URI)
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
+
 
 app.use(cors({
-  origin: 'http://localhost:5173', // Replace with your frontend URL
+  origin: 'http://localhost:5173/', 
   credentials: true
 }));
 
@@ -138,11 +138,16 @@ app.put('/cars/:id', isLoggedIn, upload.array('images', 10), async (req, res) =>
   try {
     const { title, description, tags } = req.body;
     const images = req.files.map(file => file.path);
-    const car = await Car.findByIdAndUpdate(req.params.id, { title, description, tags, images }, { new: true });
+    const car = await Car.findOne({ _id: req.params.id, user: req.user._id });
     if (!car) {
       return res.status(404).json({ message: 'Car not found' });
     }
-    res.status(200).json({ message: 'Car updated', car });
+    const updatedCar = await Car.findByIdAndUpdate(
+      req.params.id, 
+      { title, description, tags, images }, 
+      { new: true }
+    );
+    res.status(200).json({ message: 'Car updated', car: updatedCar });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -150,7 +155,10 @@ app.put('/cars/:id', isLoggedIn, upload.array('images', 10), async (req, res) =>
 
 app.delete('/cars/:id', isLoggedIn, async (req, res) => {
   try {
-    const car = await Car.findByIdAndDelete(req.params.id);
+    const car = await Car.findOneAndDelete({ 
+      _id: req.params.id, 
+      user: req.user._id 
+    });
     if (!car) {
       return res.status(404).json({ message: 'Car not found' });
     }
