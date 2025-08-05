@@ -39,22 +39,6 @@ npm install
 # Start the dev server
 npm run dev
 
-
-📁 Folder Structure
-css
-Copy
-Edit
-Car-Management-Store/
-├── public/
-├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── pages/
-│   ├── App.jsx
-│   ├── main.jsx
-├── package.json
-└── README.md
-
 ✨ Live Demo
 Coming Soon 
 
