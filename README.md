@@ -2,7 +2,6 @@
 
 A full-featured web application to manage and display car listings. Users can browse, add, and manage cars seamlessly with a clean UI built using React.js.
 
-![App Screenshot](https://github.com/rajsolanki907/Car-Management-Store/assets/YOUR_SCREENSHOT_PATH)
 
 ---
 
@@ -22,16 +21,6 @@ A full-featured web application to manage and display car listings. Users can br
 - **Icons & Styling:** FontAwesome, Custom CSS
 - **Data Handling:** React State
 - **Version Control:** Git & GitHub
-
----
-
-## 📷 Screenshots
-
-| Home Page | Add Car Form | Car Details |
-|-----------|---------------|--------------|
-| ![Home](link_to_image) | ![Form](link_to_image) | ![Details](link_to_image) |
-
-*(Add screenshots from your project)*
 
 ---
 
